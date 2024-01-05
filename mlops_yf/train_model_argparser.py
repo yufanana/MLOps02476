@@ -4,31 +4,37 @@ and save the trained model.
 
 python3 mlops_yf/train_model.py
 """
-import os
-import hydra
+import argparse
 import torch
 from models.model import MyNeuralNet
 from torch import optim, nn
 
 
-@hydra.main(config_path="config", config_name="train_conf.yaml")
-def train(cfg):
+def parse_args(argv=None):
+    """Parse command line arguments."""
+    parser = argparse.ArgumentParser(description="Train a model")
+    parser.add_argument("--lr", default=1e-3, type=float,
+                        help="learning rate to use for training")
+    parser.add_argument("--batch_size", default=64, type=int,
+                        help="batch size to use for training")
+    parser.add_argument("--epochs", default=20, type=int,
+                        help="number of epochs to use for training")
+
+    args = parser.parse_args(argv)
+    return args
+
+
+def train(lr, batch_size, epochs):
     """Train a model on MNIST."""
     print("Training model...")
-    
-    # Get hyperparameters from config file
-    lr = cfg.lr
-    batch_size = cfg.batch_size
-    epochs = cfg.epochs
-    print("cfg: ", cfg)
-
+    print(f"lr: {lr}")
 
     # Create model, loss function, and optimizer
     model = MyNeuralNet()
     criterion = nn.NLLLoss()
     optimizer = optim.Adam(model.parameters(), lr=lr)
     # Load training dataset into dataloader
-    data_folder = hydra.utils.get_original_cwd()+"/data/processed/"
+    data_folder = "data/processed/"
     data_name = "corruptmnist"
     train_images = torch.load(
         data_folder + data_name + "/processed_train_images.pt")
@@ -59,10 +65,15 @@ def train(cfg):
             "Training Loss: {:.3f}".format(loss.item()),
         )
     # Save the model
-    save_dir = hydra.utils.get_original_cwd()+"/models/"
+    save_dir = "models/"
     save_name = "trained_model.pt"
     torch.save(model, save_dir + save_name)
 
 
+def main():
+    args = parse_args()
+    train(args.lr, args.batch_size, args.epochs)
+
+
 if __name__ == "__main__":
-    train()
+    main()

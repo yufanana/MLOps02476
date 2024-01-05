@@ -7,7 +7,7 @@ name = "mlops_yf"
 version = "0.0.1"
 description = "project folder for ML Ops course"
 authors = [
-  { name = "yufan", email = "your@email.com" },
+  { name = "yufan", email = "yufan.fong@email.com" },
 ]
 
 readme = "README.md"
@@ -25,3 +25,4 @@ dev = {file = ['requirements_dev.txt']}
 
 [tool.ruff]
 line-length = 120
+select = ["I"]
