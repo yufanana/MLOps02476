@@ -7,6 +7,7 @@ python3 mlops_yf/train_model.py
 import os
 import hydra
 import torch
+import wandb
 from models.model import MyNeuralNet
 from torch import optim, nn
 
@@ -15,18 +16,24 @@ from torch import optim, nn
 def train(cfg):
     """Train a model on MNIST."""
     print("Training model...")
+
+    # Initialize wandb
+    wandb_cfg = {"learning_rate": cfg.learning_rate, 
+                 "batch_size": cfg.batch_size, 
+                 "epochs": cfg.epochs}
+    wandb.init(project="mlops_yf", config=wandb_cfg)
     
     # Get hyperparameters from config file
-    lr = cfg.lr
+    lr = cfg.learning_rate
     batch_size = cfg.batch_size
     epochs = cfg.epochs
     print("cfg: ", cfg)
-
 
     # Create model, loss function, and optimizer
     model = MyNeuralNet()
     criterion = nn.NLLLoss()
     optimizer = optim.Adam(model.parameters(), lr=lr)
+
     # Load training dataset into dataloader
     data_folder = hydra.utils.get_original_cwd()+"/data/processed/"
     data_name = "corruptmnist"
@@ -45,8 +52,8 @@ def train(cfg):
         running_loss = 0
         for batch in trainloader:
             images, labels = batch
-            # Flatten images into a 784 long vector
-            images.resize_(images.size()[0], 784)
+            # Flatten each image in the batch into a 784 long vector
+            images.resize_(images.size()[0], 784)   # batch_size, 784
             # Forward pass, calculate loss, backward pass, update weights
             optimizer.zero_grad()
             log_ps = model.forward(images)
@@ -58,6 +65,8 @@ def train(cfg):
             "Epoch: {}/{}".format(e + 1, epochs),
             "Training Loss: {:.3f}".format(loss.item()),
         )
+        wandb.log({"loss": loss})
+        
     # Save the model
     save_dir = hydra.utils.get_original_cwd()+"/models/"
     save_name = "trained_model.pt"
