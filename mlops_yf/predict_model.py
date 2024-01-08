@@ -56,7 +56,7 @@ def main():
     args = parse_args()
     dataset = args.data
     dataloader = torch.utils.data.DataLoader(dataset, batch_size=64, shuffle=False)
-    y_preds = predict(args.model, dataloader)
+    y_preds = predict(args.model, dataloader) 
 
 
 if __name__ == '__main__':
