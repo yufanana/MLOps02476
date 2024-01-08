@@ -1,6 +1,6 @@
 """
-Takes a pre-trained model file and creates prediction for some data. 
-Users provides either a folder with raw images that gets loaded in or 
+Takes a pre-trained model file and creates prediction for some data.
+Users provides either a folder with raw images that gets loaded in or
 a numpy or pickle file with already loaded images
 
 python3 mlops_yf/predict_model.py models/trained_model.pt data/example_images.npy
@@ -11,16 +11,16 @@ import torch
 
 def parse_args(argv=None):
     """Parse command line arguments."""
-    parser = argparse.ArgumentParser(description="Predict using trained model")
+    parser = argparse.ArgumentParser(description='Predict using trained model')
 
-    parser.add_argument("model", type=str, help="Path to trained model")
-    parser.add_argument("data", type=str, help="Path to data to predict on")
+    parser.add_argument('model', type=str, help='Path to trained model')
+    parser.add_argument('data', type=str, help='Path to data to predict on')
 
     args = parser.parse_args(argv)
     return args
 
 
-def predict(model: torch.nn.Module, dataloader: torch.utils.data.DataLoader) -> None:
+def predict(model: torch.nn.Module, dataloader: torch.utils.data.DataLoader) -> torch.Tensor:
     """
     Run prediction for a given model and dataloader.
 
@@ -33,7 +33,7 @@ def predict(model: torch.nn.Module, dataloader: torch.utils.data.DataLoader) -> 
         and d is the output dimension of the model
     """
 
-    print("Predicting using trained model...")
+    print('Predicting using trained model...')
     print(model)
 
     model = torch.load(model)
@@ -56,8 +56,8 @@ def main():
     args = parse_args()
     dataset = args.data
     dataloader = torch.utils.data.DataLoader(dataset, batch_size=64, shuffle=False)
-    predict(args.model, dataloader)
+    y_preds = predict(args.model, dataloader)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()

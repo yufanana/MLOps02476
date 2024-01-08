@@ -3,12 +3,12 @@ import torch
 from torch import nn
 import torch.nn.functional as F
 class MyNeuralNet(torch.nn.Module):
-    """ Basic neural network class. 
-    
+    """ Basic neural network class.
+
     Args:
         in_features: number of input features
         out_features: number of output features
-    
+
     """
     def __init__(self) -> None:
         super().__init__()
@@ -18,10 +18,10 @@ class MyNeuralNet(torch.nn.Module):
         self.fc4 = nn.Linear(64,10)     # 64 -> 10
         self.dropout = nn.Dropout(p=0.2)
 
-    
+
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """Forward pass of the model.
-        
+
         Args:
             x: input tensor expected to be of shape [N,in_features]
 
@@ -30,11 +30,15 @@ class MyNeuralNet(torch.nn.Module):
 
         """
         if x.ndim != 2:
-            raise ValueError("Expected input tensor to have 2 dimensions, "
-                             "got tensor with shape {x.shape}")
+            raise ValueError(
+                'Expected input tensor to have 2 dimensions, '
+                'got tensor with shape {x.shape}',
+            )
         if x.shape[1] != 784:
-            raise ValueError("Expected input tensor to have 784 features, "
-                             "got tensor with shape {x.shape}")
+            raise ValueError(
+                'Expected input tensor to have 784 features, '
+                'got tensor with shape {x.shape}',
+            )
         x = x.view(x.shape[0],-1)   # flatten
         x = self.dropout(F.relu(self.fc1(x)))
         x = self.dropout(F.relu(self.fc2(x)))

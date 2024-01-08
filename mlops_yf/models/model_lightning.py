@@ -5,12 +5,12 @@ import torch.nn.functional as F
 
 
 class MyNeuralNet(LightningModule):
-    """ Basic neural network class. 
-    
+    """ Basic neural network class.
+
     Args:
         in_features: number of input features
         out_features: number of output features
-    
+
     """
     def __init__(self) -> None:
         super().__init__()
@@ -20,10 +20,10 @@ class MyNeuralNet(LightningModule):
         self.fc4 = nn.Linear(64,10)
         self.dropout = nn.Dropout(p=0.2)
 
-    
+
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """Forward pass of the model.
-        
+
         Args:
             x: input tensor expected to be of shape [N,in_features]
 
@@ -46,4 +46,3 @@ class MyNeuralNet(LightningModule):
 
     def configure_optimizers(self):
         return torch.optim.SGD(self.model.parameters(), lr=0.1)
-    
