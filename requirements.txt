@@ -10,6 +10,6 @@ pytorch-lightning >= 0.7.6
 scikit-learn
 tensorflow >= 2.0.0
 tensorrt >= 7.0.0
-torch >= 2.1.0
+torch
 torch_tb_profiler >= 0.2.0
 torchvision >= 0.4.0
