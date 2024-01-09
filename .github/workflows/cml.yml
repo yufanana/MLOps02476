@@ -6,10 +6,25 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: iterative/setup-cml@v1
+
+      - name: Get pip cache dir
+        id : pip-cache
+        run: |
+            echo "::set-output name=dir::$(pip cache dir)"
+
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+            path: ${{ steps.pip-cache.outputs.dir }}
+            key: ubuntu-latest-py3.8-pip-${{ hashFiles('**/requirements.txt') }}
+            restore-keys: |
+                ubuntu-latest-py3.8-pip-
+
+
       - name: Train model
         run: |
-          pip install -r requirements.txt  # install dependencies
-          python train.py  # run training
+          python train_model_cml.py  # run training
+
       - name: Write report
         env:
           # this authenticates that the right permissions are in place
